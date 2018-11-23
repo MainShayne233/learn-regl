@@ -18,16 +18,17 @@ const clearCommand = (regl) => ({
   }),
 });
 
-const drawTriangleCommand = (getProps) => (regl) => ({
+const drawTriangleCommand = (regl) => ({
   func: regl({
     vert: `
   precision mediump float;
-  uniform float scale;
+  uniform float tick;
   attribute vec2 position;
   attribute vec3 color;
   varying vec3 fcolor;
   void main () {
     fcolor = color;
+    float scale = cos(0.01 * tick);
     gl_Position = vec4(scale * position, 0, 1);
   }
     `,
@@ -47,54 +48,27 @@ const drawTriangleCommand = (getProps) => (regl) => ({
     },
 
     uniforms: {
-      scale: regl.prop('scale'),
+      tick: regl.context('tick'),
     },
 
     count: 3,
   }),
 
-  getProps,
+  getProps: () => ({}),
 });
 
-const color = () => [0, 0, 0, 1];
-const depth = () => 1;
 const height = 500;
 const width = 500;
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { scale: 1 };
-  }
-
   render() {
     return (
       <div style={styles.container}>
         <ReglCanvas
           height={height}
           width={width}
-          color={color}
-          depth={depth}
-          commands={[
-            clearCommand,
-            drawTriangleCommand(() => ({
-              scale: this.state.scale,
-            })),
-          ]}
+          commands={[clearCommand, drawTriangleCommand]}
         />
-        <label>
-          Scale
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.01"
-            value={this.state.scale}
-            onChange={({ target }) => {
-              this.setState({ scale: parseFloat(target.value) });
-            }}
-          />
-        </label>
       </div>
     );
   }
