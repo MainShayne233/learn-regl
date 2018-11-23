@@ -22,14 +22,13 @@ const drawTriangleCommand = (regl) => ({
   func: regl({
     vert: `
   precision mediump float;
-  uniform float tick;
+  uniform vec2 translate, scale;
   attribute vec2 position;
   attribute vec3 color;
   varying vec3 fcolor;
   void main () {
     fcolor = color;
-    float scale = cos(0.01 * tick);
-    gl_Position = vec4(scale * position, 0, 1);
+    gl_Position = vec4(scale * position + translate, 0, 1);
   }
     `,
 
@@ -48,13 +47,17 @@ const drawTriangleCommand = (regl) => ({
     },
 
     uniforms: {
-      tick: regl.context('tick'),
+      translate: ({ tick }) => [Math.cos(0.01 * tick), Math.sin(0.03 * tick)],
+      scale: ({ tick }, { scale }) => [
+        0.3 * Math.cos(0.08 * tick) + scale,
+        scale,
+      ],
     },
 
     count: 3,
   }),
 
-  getProps: () => ({}),
+  getProps: () => ({ scale: 0.5 }),
 });
 
 const height = 500;
