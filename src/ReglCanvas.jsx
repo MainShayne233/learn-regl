@@ -2,22 +2,24 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import reglInitializer from 'regl';
 
-const initializeRegl = (element, { commands }) => {
+const initializeRegl = (element, { commands, getAsyncProps }) => {
   const regl = reglInitializer(element);
   const initializedCommands = commands.map((command) => command(regl));
 
-  regl.frame(() => {
-    initializedCommands.forEach(({ func, getProps }) => {
-      func(getProps());
+  getAsyncProps(regl).then((asyncProps) => {
+    regl.frame(() => {
+      initializedCommands.forEach(({ func, getProps }) => {
+        func(getProps(asyncProps));
+      });
     });
   });
 };
 
 class ReglCanvas extends Component {
   componentDidMount() {
-    const { commands } = this.props;
+    const { commands, getAsyncProps } = this.props;
 
-    initializeRegl(this.canvasNode, { commands });
+    initializeRegl(this.canvasNode, { commands, getAsyncProps });
   }
 
   render() {
@@ -38,10 +40,12 @@ ReglCanvas.propTypes = {
   height: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,
   commands: PropTypes.arrayOf(PropTypes.func),
+  getAsyncProps: PropTypes.func,
 };
 
 ReglCanvas.defaultProps = {
   commands: [],
+  getAsyncProps: () => new Promise((res) => res()),
 };
 
 export default ReglCanvas;

@@ -3001,6 +3001,11 @@ github-username@^4.0.0:
   dependencies:
     gh-got "^6.0.0"
 
+gl-mat4@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/gl-mat4/-/gl-mat4-1.2.0.tgz#49d8a7636b70aa00819216635f4a3fd3f4669b26"
+  integrity sha512-sT5C0pwB1/e9G9AvAoLsoaJtbMGjfd/jfxo8jMCKqYYEnjZuFvqV5rehqar0538EmssjdDeiEWnKyBSTw7quoA==
+
 glob-all@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/glob-all/-/glob-all-3.1.0.tgz#8913ddfb5ee1ac7812656241b03d5217c64b02ab"
@@ -5591,6 +5596,11 @@ require-uncached@^1.0.3:
 requires-port@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
+
+resl@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/resl/-/resl-1.0.3.tgz#2c7ca5682285bc519f7dcfb81fe6f3df0005e774"
+  integrity sha1-LHylaCKFvFGffc+4H+bz3wAF53Q=
 
 resolve-cwd@^2.0.0:
   version "2.0.0"
