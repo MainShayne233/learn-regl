@@ -10,13 +10,63 @@ const styles = {
   },
 };
 
+const clearCommand = (regl) => () => {
+  regl.clear({
+    color: [0, 0, 0, 1],
+    depth: 1,
+  });
+};
+
+const drawTriangleCommand = (regl) =>
+  regl({
+    vert: `
+  precision mediump float;
+  uniform float scale;
+  attribute vec2 position;
+  attribute vec3 color;
+  varying vec3 fcolor;
+  void main () {
+    fcolor = color;
+    gl_Position = vec4(scale * position, 0, 1);
+  }
+    `,
+
+    frag: `
+  precision mediump float;
+  varying vec3 fcolor;
+  void main () {
+    gl_FragColor = vec4(fcolor, 1);
+  }
+    `,
+
+    attributes: {
+      position: [[1, 0], [0, 1], [-1, -1]],
+
+      color: [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+    },
+
+    uniforms: {
+      scale: 0.25,
+    },
+
+    count: 3,
+  });
+
+const commands = [clearCommand, drawTriangleCommand];
+const color = () => [0, 0, 0, 1];
+const depth = () => 1;
+const height = 500;
+const width = 500;
+
 const App = () => (
   <div style={styles.container}>
     <ReglCanvas
       canvasId="learning-regl-canvas-node"
-      height={500}
-      width={500}
-      color={() => [0, 0.5 * (1.0 + Math.cos(Date.now() * 0.01)), 1, 1]}
+      height={height}
+      width={width}
+      color={color}
+      depth={depth}
+      commands={commands}
     />
   </div>
 );
