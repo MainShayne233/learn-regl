@@ -198,7 +198,7 @@ class App extends Component {
       length: 7,
       width: 5.5,
       depth: 1.25,
-      rotation: 0,
+      rotation: 0.5,
     };
   }
   render() {
