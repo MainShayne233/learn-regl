@@ -53,6 +53,41 @@ const cubePosition = [
   [-0.5, -0.5, +0.5], // bottom face
 ];
 
+const computeCubePosition = (timeValues, { length, width, depth }) => {
+  const [computedLength, computedWidth, computedDepth] = [
+    length,
+    width,
+    depth,
+  ].map((dim) => dim / 10);
+
+  return [
+    [-computedWidth, +computedDepth, +computedLength],
+    [+computedWidth, +computedDepth, +computedLength],
+    [+computedWidth, -computedDepth, +computedLength],
+    [-computedWidth, -computedDepth, +computedLength], // positive z face.
+    [+computedWidth, +computedDepth, +computedLength],
+    [+computedWidth, +computedDepth, -computedLength],
+    [+computedWidth, -computedDepth, -computedLength],
+    [+computedWidth, -computedDepth, +computedLength], // positive x face
+    [+computedWidth, +computedDepth, -computedLength],
+    [-computedWidth, +computedDepth, -computedLength],
+    [-computedWidth, -computedDepth, -computedLength],
+    [+computedWidth, -computedDepth, -computedLength], // negative z face
+    [-computedWidth, +computedDepth, -computedLength],
+    [-computedWidth, +computedDepth, +computedLength],
+    [-computedWidth, -computedDepth, +computedLength],
+    [-computedWidth, -computedDepth, -computedLength], // negative x face.
+    [-computedWidth, +computedDepth, -computedLength],
+    [+computedWidth, +computedDepth, -computedLength],
+    [+computedWidth, +computedDepth, +computedLength],
+    [-computedWidth, +computedDepth, +computedLength], // top face
+    [-computedWidth, -computedDepth, -computedLength],
+    [+computedWidth, -computedDepth, -computedLength],
+    [+computedWidth, -computedDepth, +computedLength],
+    [-computedWidth, -computedDepth, +computedLength],
+  ];
+};
+
 const cubeUv = [
   [0.0, 0.0],
   [1.0, 0.0],
@@ -115,7 +150,7 @@ const drawCube = (getProps) => (regl) => ({
     gl_Position = projection * view * vec4(position, 1);
   }`,
     attributes: {
-      position: cubePosition,
+      position: computeCubePosition,
       uv: cubeUv,
     },
     elements: cubeElements,
@@ -160,9 +195,9 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      length: 6,
-      width: 5,
-      depth: 4,
+      length: 7,
+      width: 5.5,
+      depth: 1.25,
       rotation: 0,
     };
   }
@@ -176,12 +211,13 @@ class App extends Component {
               <input
                 type="range"
                 min={1}
-                max={10}
+                max={12}
+                step={0.25}
                 value={`${this.state[dimension]}`}
                 onChange={({ target }) =>
                   this.setState({
                     ...this.state,
-                    [dimension]: parseInt(target.value, 10),
+                    [dimension]: parseFloat(target.value),
                   })
                 }
               />
@@ -218,6 +254,9 @@ class App extends Component {
             drawCube(({ texture }) => ({
               texture,
               rotation: this.state.rotation,
+              length: this.state.length,
+              width: this.state.width,
+              depth: this.state.depth,
             })),
           ]}
         />
