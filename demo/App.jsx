@@ -120,8 +120,8 @@ const drawCube = (getProps) => (regl) => ({
     },
     elements: cubeElements,
     uniforms: {
-      view: ({ tick }) => {
-        const t = 0.01 * tick;
+      view: (timeValues, { rotation }) => {
+        const t = rotation;
         return mat4.lookAt(
           [],
           [5 * Math.cos(t), 2.5 * Math.sin(t), 5 * Math.sin(t)],
@@ -157,20 +157,71 @@ const height = 500;
 const width = 500;
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      length: 6,
+      width: 5,
+      depth: 4,
+      rotation: 0,
+    };
+  }
   render() {
     return (
-      <ReglCanvas
-        height={height}
-        width={width}
-        getAsyncProps={getAsyncProps}
-        commands={[
-          clearCommand(() => ({
-            color: [0, 0, 0, 255],
-            depth: 1,
-          })),
-          drawCube(({ texture }) => ({ texture })),
-        ]}
-      />
+      <div>
+        <div>
+          {['length', 'width', 'depth'].map((dimension) => (
+            <div key={dimension}>
+              <label>{dimension}</label>
+              <input
+                type="range"
+                min={1}
+                max={10}
+                value={`${this.state[dimension]}`}
+                onChange={({ target }) =>
+                  this.setState({
+                    ...this.state,
+                    [dimension]: parseInt(target.value, 10),
+                  })
+                }
+              />
+              <span>{this.state[dimension]}</span>
+            </div>
+          ))}
+          <div>
+            <label>rotation</label>
+            <input
+              type="range"
+              min={0}
+              max={10}
+              step={0.1}
+              value={`${this.state.rotation}`}
+              onChange={({ target }) =>
+                this.setState({
+                  ...this.state,
+                  rotation: parseFloat(target.value),
+                })
+              }
+            />
+            <span>{this.state.rotation}</span>
+          </div>
+        </div>
+        <ReglCanvas
+          height={height}
+          width={width}
+          getAsyncProps={getAsyncProps}
+          commands={[
+            clearCommand(() => ({
+              color: [0, 0, 0, 255],
+              depth: 1,
+            })),
+            drawCube(({ texture }) => ({
+              texture,
+              rotation: this.state.rotation,
+            })),
+          ]}
+        />
+      </div>
     );
   }
 }
